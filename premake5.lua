@@ -50,6 +50,8 @@ filter({})
 
 project("desk")
 	kind("StaticLib")
+	targetdir("lib/%{cfg.buildcfg}/%{cfg.platform}")
+	objdir("obj")
 	defines("DESK_INTERNAL")
 	files("src/*.c")
 	includedirs("include")

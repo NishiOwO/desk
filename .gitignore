@@ -1,0 +1,6 @@
+*.make
+Makefile
+/obj
+/lib
+*.o
+*.a
