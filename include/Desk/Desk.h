@@ -5,4 +5,9 @@
 #include <Desk/Internal.h>
 #endif
 
+typedef struct _DeskWidgetClassRec {
+} DeskWidgetClassRec;
+
+typedef DeskWidgetClassRec* DeskWidgetClass;
+
 #endif

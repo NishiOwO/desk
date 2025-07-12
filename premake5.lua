@@ -48,14 +48,37 @@ filter("platforms:Win64")
 
 filter({})
 
+newoption({
+	trigger = "backend",
+	value = "type",
+	description = "Choose a backend",
+	allowed = {
+		{"gdi", "GDI"},
+		{"x11", "X11"}
+	},
+	default = "x11"
+})
+
 project("desk")
-	kind("StaticLib")
+	kind("SharedLib")
 	targetdir("lib/%{cfg.buildcfg}/%{cfg.platform}")
 	objdir("obj")
 	defines("DESK_INTERNAL")
 	files("src/*.c")
 	files("external/*.c")
+	removefiles("src/Backend*.c")
 	includedirs("include")
 	includedirs("external")
 	common()
 	filter({})
+	if _OPTIONS["backend"] == "gdi" then
+		files("src/BackendGDI.c")
+		links({
+			"gdi32"
+		})
+	elseif _OPTIONS["backend"] == "x11" then
+		files("src/BackendX11.c")
+		links({
+			"X11"
+		})
+	end
