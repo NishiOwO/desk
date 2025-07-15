@@ -1,5 +1,5 @@
-#ifndef __DESK_INTERNAL_H__
-#define __DESK_INTERNAL_H_
+#ifndef __DESK_SCALE_H__
+#define __DESK_SCALE_H__
 
 #include <Desk/Desk.h>
 
@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-DESK_EXPORT void _DeskInit(void);
+DESK_EXPORT DeskWidgetClass DeskScaleWidgetClass;
 
 #ifdef __cplusplus
 }

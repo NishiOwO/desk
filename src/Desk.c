@@ -1,6 +1,10 @@
 #include <Desk/Desk.h>
 
-void DeskInit(void) {}
+#include <stdarg.h>
+
+#include <stb_ds.h>
+
+void DeskInit(void) { _DeskInit(); }
 
 void DeskMainLoop(DeskWidget w) {}
 
@@ -27,3 +31,5 @@ void DeskDestroy(DeskWidget w) {
 	if(w->wclass->destroy != NULL) w->wclass->destroy(w);
 	free(w);
 }
+
+DeskWidget DeskCreateWidget(DeskWidgetClass wclass, int num, ...) {}

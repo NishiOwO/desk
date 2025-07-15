@@ -1,13 +1,11 @@
-#ifndef __DESK_INTERNAL_H__
-#define __DESK_INTERNAL_H_
+#ifndef __DESK_STRINGDEFS_H__
+#define __DESK_STRINGDEFS_H__
 
 #include <Desk/Desk.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-DESK_EXPORT void _DeskInit(void);
 
 #ifdef __cplusplus
 }

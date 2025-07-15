@@ -15,6 +15,8 @@
 #include <Desk/Internal.h>
 #endif
 
+#include <Desk/StringDefs.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,8 +28,9 @@ typedef struct _DeskWidgetRec DeskWidgetRec;
 typedef DeskWidgetRec*	      DeskWidget;
 
 struct _DeskWidgetClassRec {
-	DeskWidget (*create)(void);
+	void (*init)(DeskWidget w);
 	void (*destroy)(DeskWidget w);
+	void (*render)(DeskWidget w);
 };
 
 struct _DeskWidgetRec {
@@ -40,6 +43,8 @@ struct _DeskWidgetRec {
 DESK_EXPORT void DeskInit(void);
 
 DESK_EXPORT void DeskMainLoop(DeskWidget w);
+
+DESK_EXPORT DeskWidget DeskCreateWidget(DeskWidgetClass wclass, int num, ...);
 
 DESK_EXPORT DeskWidget DeskGetRoot(DeskWidget w);
 
