@@ -8,6 +8,11 @@ extern "C" {
 #endif
 
 #define DeskNtitle "Stitle"
+#define DeskNtext "Stext"
+#define DeskNx "Ix"
+#define DeskNy "Iy"
+#define DeskNwidth "Iwidth"
+#define DeskNheight "Iheight"
 
 #ifdef __cplusplus
 }
