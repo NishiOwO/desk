@@ -40,11 +40,11 @@ struct _DeskWidgetRec {
 	DeskWidget	parent;
 	DeskWidget*	children;
 	void*		opaque;
-	void* window;
-	int render;
+	void*		window;
+	int		render;
 };
 
-#define DeskNoParent (DeskWidget)NULL
+#define DeskNoParent ((DeskWidget)NULL)
 
 #define DeskSetX (1 << 0)
 #define DeskSetY (1 << 1)
@@ -62,7 +62,7 @@ DESK_EXPORT int DeskPending(DeskWidget w);
 
 DESK_EXPORT void DeskMainLoop(DeskWidget w);
 
-DESK_EXPORT DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, int num, ...);
+DESK_EXPORT DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...);
 
 DESK_EXPORT DeskWidget DeskGetRoot(DeskWidget w);
 

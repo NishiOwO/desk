@@ -27,6 +27,8 @@ DESK_EXPORT void _DeskStep(void* win, int* render);
 
 DESK_EXPORT void _DeskSetCoord(void* win, int x, int y, int width, int height, int flag);
 
+DESK_EXPORT void _DeskSetTitle(void* win, const char* title);
+
 #ifdef __cplusplus
 }
 #endif
