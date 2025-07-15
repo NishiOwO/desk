@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+#define DeskNtitle "title"
+
 #ifdef __cplusplus
 }
 #endif
