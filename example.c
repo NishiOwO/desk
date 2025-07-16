@@ -5,7 +5,7 @@
 int main(int argc, char** argv){
 	DeskWidget w, w2;
 	DeskInit();
-	w = DeskCreateWidget(DeskWindowWidgetClass, DeskNoParent,
+	w = DeskCreateWidget(DeskWindowWidgetClass, DeskWidgetNone,
 		DeskNtitle, "Example window",
 		DeskNwidth, 300,
 		DeskNheight, 300,

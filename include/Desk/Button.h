@@ -1,11 +1,11 @@
 #ifndef __DESK_BUTTON_H__
 #define __DESK_BUTTON_H__
 
-#include <Desk/Desk.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <Desk/Desk.h>
 
 DESK_EXPORT DeskWidgetClass DeskButtonWidgetClass;
 

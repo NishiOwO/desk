@@ -8,11 +8,11 @@ foreach my $arg (@ARGV){
 	print(f "#ifndef __DESK_" . uc($arg) . "_H__\n");
 	print(f "#define __DESK_" . uc($arg) . "_H__\n");
 	print(f "\n");
-	print(f "#include <Desk/Desk.h>\n");
-	print(f "\n");
 	print(f "#ifdef __cplusplus\n");
 	print(f "extern \"C\" {\n");
 	print(f "#endif\n");
+	print(f "\n");
+	print(f "#include <Desk/Desk.h>\n");
 	print(f "\n");
 	print(f "DESK_EXPORT DeskWidgetClass Desk" . $arg . "WidgetClass;\n");
 	print(f "\n");

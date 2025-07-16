@@ -1,4 +1,5 @@
 #include <Desk/Desk.h>
+#include <Desk/Font.h>
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -19,7 +20,9 @@ void DeskSleep(int ms) {
 #endif
 }
 
-void DeskInit(void) { _DeskInit(); }
+void DeskInit(void) {
+	_DeskInit();
+}
 
 void DeskStep(DeskWidget w) {
 	int i;
@@ -28,15 +31,18 @@ void DeskStep(DeskWidget w) {
 	}
 	_DeskStep(w->window, &w->render);
 
-	if(w->render && w->wclass->render != NULL) w->wclass->render(w);
+	if(w->render && w->wclass->render != NULL) {
+		w->wclass->render(w);
+		w->render = 0;
+	}
 }
 
-int DeskPending(DeskWidget w) {
+DeskBool DeskPending(DeskWidget w) {
 	int i;
 	int p = 0;
 	for(i = 0; i < arrlen(w->children); i++) {
-		if(DeskPending(w->children[i])) {
-			return 1;
+		if(DeskPending(w->children[i]) || w->render) {
+			return DeskTrue;
 		}
 	}
 	return _DeskPending(w->window);
@@ -71,17 +77,29 @@ void DeskDestroy(DeskWidget w) {
 		}
 	}
 	if(w->wclass->destroy != NULL) w->wclass->destroy(w);
+	if(w->texts != NULL){
+		arrfree(w->texts);
+	}
 	free(w);
 }
 
 DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	DeskWidget widget = malloc(sizeof(*widget));
-	va_list	   va;
+	va_list va;
 	LOG("Created widget", "");
 	memset(widget, 0, sizeof(*widget));
 	widget->wclass = wclass;
 	widget->render = 1;
-	widget->window = _DeskCreateWindow(parent == NULL ? NULL : parent->window, 50, 50, 200, 200);
+	widget->window = _DeskCreateWindow(parent == DeskWidgetNone ? NULL : parent->window, 50, 50, 200, 200);
+	widget->parent = parent;
+	if(parent != DeskWidgetNone) {
+		arrput(parent->children, widget);
+	}else{
+		widget->font = DeskFontOpen(NULL);
+		if(widget->font != DeskFontNone){
+			LOG("Loaded default font", "");
+		}
+	}
 	if(wclass->init != NULL) wclass->init(widget);
 
 	va_start(va, parent);
@@ -101,22 +119,37 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	return widget;
 }
 
-void DeskSetCoord(DeskWidget w, int x, int y, int width, int height, int flag) { _DeskSetCoord(w->window, x, y, width, height, flag); }
+const char* DeskGetText(DeskWidget w, const char* key){
+	int i;
+	for(i = 0; i < arrlen(w->texts); i += 2){
+		if(strcmp(w->texts[i], key) == 0){
+			return w->texts[i + 1];
+		}
+	}
+	return NULL;
+}
+
+void DeskSetGeometry(DeskWidget w, int x, int y, int width, int height, int flag) { _DeskSetGeometry(w->window, x, y, width, height, flag); }
+
+void DeskGetGeometry(DeskWidget w, int* x, int* y, int* width, int* height) { _DeskGetGeometry(w->window, x, y, width, height); }
 
 void DeskSetInteger(DeskWidget w, const char* key, int value) {
 	if(strcmp(key, DeskNx) == 0) {
-		DeskSetCoord(w, value, 0, 0, 0, DeskSetX);
+		DeskSetGeometry(w, value, 0, 0, 0, DeskSetX);
 	} else if(strcmp(key, DeskNy) == 0) {
-		DeskSetCoord(w, 0, value, 0, 0, DeskSetY);
+		DeskSetGeometry(w, 0, value, 0, 0, DeskSetY);
 	} else if(strcmp(key, DeskNwidth) == 0) {
-		DeskSetCoord(w, 0, 0, value, 0, DeskSetWidth);
+		DeskSetGeometry(w, 0, 0, value, 0, DeskSetWidth);
 	} else if(strcmp(key, DeskNheight) == 0) {
-		DeskSetCoord(w, 0, 0, 0, value, DeskSetHeight);
+		DeskSetGeometry(w, 0, 0, 0, value, DeskSetHeight);
 	}
 }
 
 void DeskSetString(DeskWidget w, const char* key, const char* value) {
 	if(strcmp(key, DeskNtitle) == 0) {
 		_DeskSetTitle(w->window, value);
+	}else{
+		arrput(w->texts, key);
+		arrput(w->texts, value);
 	}
 }
