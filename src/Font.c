@@ -45,8 +45,11 @@ unsigned char* DeskFontRender(DeskFont font, const char* str, int size, int* wid
 	long* l = malloc(sizeof(*l) * strlen(str) * 5);
 	int incr = 0;
 	int i;
+	int ascent, descent, linegap;
 	const char* s = str;
+	double scale;
 	unsigned char* r = NULL;
+	int ix = 0, iy = 0;
 	l[0] = 0;
 
 	while(s[0] != 0){
@@ -71,7 +74,17 @@ unsigned char* DeskFontRender(DeskFont font, const char* str, int size, int* wid
 		s += sz;
 	}
 
+	stbtt_GetFontVMetrics(font->ttf, &ascent, &descent, &linegap);
+	scale	   = (double)size / (ascent - descent);
+
 	for(i = 0; l[i] != 0; i++){
+		int x1, x2, y1, y2, ax, lsb, kern;
+		unsigned char* buf;
+		stbtt_GetCodepointBitmapBox(font->ttf, l[i], scale, scale, &x1, &y1, &x2, &y2);
+		stbtt_GetCodepointHMetrics(font->ttf, l[i], &ax, &lsb);
+		buf = malloc((x2 - x1) * (y2 - y1));
+		stbtt_MakeCodepointBitmap(font->ttf, buf, x2 - x1, y2 - y1, x2 - x1, scale, scale, l[i]);
+		free(buf);
 	}
 
 	free(l);
