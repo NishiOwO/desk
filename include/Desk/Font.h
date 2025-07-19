@@ -30,6 +30,8 @@ DESK_EXPORT DeskFont DeskFontOpen(const char* path);
 
 DESK_EXPORT unsigned char* DeskFontRender(DeskFont font, const char* str, int size, int* width, int* height);
 
+DESK_EXPORT void DeskFontDraw(DeskWidget w, DeskFont font, const char* str, int x, int y, int size);
+
 DESK_EXPORT void DeskFontDestroy(DeskFont font);
 
 #ifdef __cplusplus

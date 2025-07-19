@@ -39,6 +39,8 @@ DESK_EXPORT int _DeskGetBorderWidth(void* win);
 
 DESK_EXPORT void _DeskDrawRectangle(void* win, int x, int y, int width, int height);
 
+DESK_EXPORT void _DeskPutImage(void* win, int x, int y, int width, int height, unsigned char* data);
+
 #ifdef __cplusplus
 }
 #endif

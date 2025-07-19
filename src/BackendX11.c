@@ -1,6 +1,7 @@
 #include <Desk/Desk.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -71,6 +72,19 @@ void _DeskStep(void* win, DeskBool* render) {
 			w->y = ev.xconfigure.y;
 			w->w = ev.xconfigure.width;
 			w->h = ev.xconfigure.height;
+		}
+	}
+}
+
+void _DeskPutImage(void* win, int x, int y, int width, int height, unsigned char* data){
+	window_t* w = (window_t*)win;
+	int i, j;
+	for(i = 0; i < height; i++){
+		for(j = 0; j < width; j++){
+			int idx = (i * width + j) * 4;
+			if(!data[idx + 3]) continue;
+			_DeskSetForegroundColor(win, data[idx + 0], data[idx + 1], data[idx + 2]);
+			XFillRectangle(display, w->window, w->gc, x + j, y + i, 1, 1);
 		}
 	}
 }

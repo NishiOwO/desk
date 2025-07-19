@@ -2,6 +2,8 @@
 #include <Desk/Font.h>
 #include <Desk/Button.h>
 
+#include <stdlib.h>
+
 static void widget_init(DeskWidget w) {}
 
 static void widget_destroy(DeskWidget w) {}
@@ -15,7 +17,9 @@ static void widget_render(DeskWidget w) {
 	_DeskDrawRectangle(w->window, 0, 0, width, height);
 	if(text != NULL){
 		DeskWidget root = DeskGetRoot(w);
-		DeskFontRender(root->font, text, 20, &width, &height);
+		int bw, bh;
+		free(DeskFontRender(root->font, text, 20, &bw, &bh));
+		DeskFontDraw(w, root->font, text, width / 2 - bw / 2, height / 2 - bh / 2, 20);
 	}
 }
 
