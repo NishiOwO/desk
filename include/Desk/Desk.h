@@ -80,6 +80,7 @@ struct _DeskWidgetRec {
 #define DeskSetSize (DeskSetWidth | DeskSetHeight)
 
 #define DeskFlagClickable (1 << 0)
+#define DeskFlagCanBeRoot (1 << 1)
 
 #define DeskDefaultFontSize 16
 

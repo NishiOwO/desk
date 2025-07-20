@@ -96,8 +96,15 @@ void DeskDestroy(DeskWidget w) {
 }
 
 DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
-	DeskWidget widget = malloc(sizeof(*widget));
+	DeskWidget widget;
 	va_list va;
+
+	if(parent == DeskWidgetNone && !(wclass->flag & DeskFlagCanBeRoot)){
+		LOG("Cannot be root widget", "");
+		return DeskWidgetNone;
+	}
+
+	widget = malloc(sizeof(*widget));
 	LOG("Created widget", "");
 	memset(widget, 0, sizeof(*widget));
 	sh_new_strdup(widget->integers);
