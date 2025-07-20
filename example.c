@@ -10,7 +10,7 @@ void pressed(DeskWidget w){
 }
 
 int main(int argc, char** argv){
-	DeskWidget w, w2, w3;
+	DeskWidget w, w2, w3, w4, w5;
 	DeskInit();
 	w = DeskCreateWidget(DeskWindowWidgetClass, DeskWidgetNone,
 		DeskNtitle, "Example window",
@@ -19,14 +19,30 @@ int main(int argc, char** argv){
 		DeskNfontSize, 16,
 	NULL);
 	w2 = DeskCreateWidget(DeskButtonWidgetClass, w,
-		DeskNtext, "test",
+		DeskNtext, "test 1",
 		DeskNx, 10,
 		DeskNy, 10,
 		DeskNwidth, 100,
 		DeskNheight, 50,
 		DeskNpressCallback, pressed,
 	NULL);
-	w3 = DeskCreateWidget(DeskLabelWidgetClass, w,
+	w3 = DeskCreateWidget(DeskButtonWidgetClass, w,
+		DeskNtext, "test 2",
+		DeskNx, 110,
+		DeskNy, 10,
+		DeskNwidth, 100,
+		DeskNheight, 25,
+		DeskNpressCallback, pressed,
+	NULL);
+	w4 = DeskCreateWidget(DeskButtonWidgetClass, w,
+		DeskNtext, "test 3",
+		DeskNx, 110,
+		DeskNy, 35,
+		DeskNwidth, 100,
+		DeskNheight, 25,
+		DeskNpressCallback, pressed,
+	NULL);
+	w5 = DeskCreateWidget(DeskLabelWidgetClass, w,
 		DeskNtext, "test",
 		DeskNx, 10,
 		DeskNy, 60,
