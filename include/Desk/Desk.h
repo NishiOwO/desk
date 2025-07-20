@@ -19,6 +19,8 @@ extern "C" {
 
 typedef unsigned char DeskBool;
 
+typedef struct _DeskIntegerKeyValue DeskIntegerKeyValue;
+
 typedef struct _DeskWidgetClassRec DeskWidgetClassRec;
 typedef DeskWidgetClassRec* DeskWidgetClass;
 
@@ -27,6 +29,11 @@ typedef DeskWidgetRec* DeskWidget;
 
 #include <Desk/StringDefs.h>
 #include <Desk/Font.h>
+
+struct _DeskIntegerKeyValue {
+	char* key;
+	int value;
+};
 
 struct _DeskWidgetClassRec {
 	void (*init)(DeskWidget w);
@@ -44,6 +51,7 @@ struct _DeskWidgetRec {
 	DeskBool pressed;
 	DeskBool held;
 	const char** texts;
+	DeskIntegerKeyValue* integers;
 	DeskFont font;
 };
 
@@ -72,7 +80,9 @@ DESK_EXPORT DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget paren
 
 DESK_EXPORT DeskWidget DeskGetRoot(DeskWidget w);
 
-DESK_EXPORT const char* DeskGetText(DeskWidget w, const char* key);
+DESK_EXPORT int DeskGetInteger(DeskWidget w, const char* key);
+
+DESK_EXPORT const char* DeskGetString(DeskWidget w, const char* key);
 
 DESK_EXPORT void DeskSetGeometry(DeskWidget w, int x, int y, int width, int height, int flag);
 
@@ -81,6 +91,8 @@ DESK_EXPORT void DeskGetGeometry(DeskWidget w, int* x, int* y, int* width, int* 
 DESK_EXPORT void DeskSetInteger(DeskWidget w, const char* key, int value);
 
 DESK_EXPORT void DeskSetString(DeskWidget w, const char* key, const char* value);
+
+DESK_EXPORT DeskFont DeskGetFont(DeskWidget w);
 
 #ifdef __cplusplus
 }

@@ -31,6 +31,7 @@ DeskFont DeskFontOpen(const char* path){
 	int st;
 	FILE* fp = fopen(path == NULL ? FONT_TTF : path, "rb");
 	if(fp == NULL){
+		LOG("Could not open %s", path == NULL ? FONT_TTF : path);
 		return DeskFontNone;
 	}
 	
@@ -71,6 +72,15 @@ unsigned char* DeskFontRender(DeskFont font, const char* str, int size, int* wid
 
 	*width = 0;
 	*height = 0;
+
+	if(font == DeskFontNone){
+		free(l);
+		unsigned char* px = malloc(4);
+		*width = 1;
+		*height = 1;
+		memset(px, 0, 4);
+		return px;
+	}
 
 	while(s[0] != 0){
 		int sz = DeskUnicode8To32(s, l + incr);

@@ -7,8 +7,11 @@ extern "C" {
 
 #include <Desk/Desk.h>
 
+#define DeskNpressCallback "Cpress"
+
 #define DeskNtitle "Stitle"
 #define DeskNtext "Stext"
+
 #define DeskNx "Ix"
 #define DeskNy "Iy"
 #define DeskNwidth "Iwidth"

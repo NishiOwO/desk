@@ -10,16 +10,26 @@ static void widget_destroy(DeskWidget w) {}
 
 static void widget_render(DeskWidget w) {
 	int x, y, width, height;
-	const char* text = DeskGetText(w, DeskNtext);
+	const char* text = DeskGetString(w, DeskNtext);
 	DeskGetGeometry(w, &x, &y, &width, &height);
 	_DeskSetForegroundColor(w->window, 0, 0, 0);
 	_DeskSetBorderWidth(w->window, 1);
 	_DeskDrawRectangle(w->window, 0, 0, width, height);
+	if(w->held){
+		_DeskSetForegroundColor(w->window, 0, 0, 0);
+		_DeskFillRectangle(w->window, 0, 0, width, height);
+	}
 	if(text != NULL){
+		DeskFont font = DeskGetFont(w);
 		DeskWidget root = DeskGetRoot(w);
 		int bw, bh;
-		free(DeskFontRender(root->font, text, 20, &bw, &bh));
-		DeskFontDraw(w, root->font, text, width / 2 - bw / 2, height / 2 - bh / 2, 20);
+		free(DeskFontRender(font, text, 16, &bw, &bh));
+		if(w->held){
+			_DeskSetForegroundColor(w->window, 255, 255, 255);
+		}else{
+			_DeskSetForegroundColor(w->window, 0, 0, 0);
+		}
+		DeskFontDraw(w, font, text, width / 2 - bw / 2, height / 2 - bh / 2, 16);
 	}
 }
 

@@ -7,7 +7,7 @@
 #include <X11/Xutil.h>
 
 static Display* display;
-static long mask = ExposureMask | StructureNotifyMask;
+static long mask = ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask;
 
 typedef struct window {
 	Window window;
@@ -61,9 +61,10 @@ DeskBool _DeskPending(void* win) {
 	return DeskFalse;
 }
 
-void _DeskStep(void* win, DeskBool* render) {
+void _DeskStep(void* win, DeskBool* render, DeskBool* held, DeskBool* pressed) {
 	XEvent ev;
 	window_t* w = (window_t*)win;
+	*pressed = DeskFalse;
 	if(XCheckWindowEvent(display, w->window, mask, &ev)) {
 		if(ev.type == Expose) {
 			*render = DeskTrue;
@@ -72,6 +73,13 @@ void _DeskStep(void* win, DeskBool* render) {
 			w->y = ev.xconfigure.y;
 			w->w = ev.xconfigure.width;
 			w->h = ev.xconfigure.height;
+		} else if(ev.type == ButtonPress && ev.xbutton.button == Button1){
+			*held = DeskTrue;
+			*render = 1;
+		}else if(ev.type == ButtonRelease && ev.xbutton.button == Button1 && (*held)){
+			*held = DeskFalse;
+			*pressed = DeskTrue;
+			*render = 1;
 		}
 	}
 }
@@ -83,8 +91,7 @@ void _DeskPutImage(void* win, int x, int y, int width, int height, unsigned char
 		for(j = 0; j < width; j++){
 			int idx = (i * width + j) * 4;
 			if(!data[idx + 3]) continue;
-			_DeskSetForegroundColor(win, data[idx + 0], data[idx + 1], data[idx + 2]);
-			XFillRectangle(display, w->window, w->gc, x + j, y + i, 1, 1);
+			_DeskFillRectangle(win, x + j, y + i, 1, 1);
 		}
 	}
 }
@@ -150,4 +157,14 @@ void _DeskDrawRectangle(void* win, int x, int y, int width, int height) {
 	double sb = (double)_DeskGetBorderWidth(win) / 2;
 	if((sb - (int)sb) > 0.5) sb = 1 + (int)sb;
 	XDrawRectangle(display, w->window, w->gc, x + sb, y + sb, width - sb * 2, height - sb * 2);
+}
+
+void _DeskFillRectangle(void* win, int x, int y, int width, int height){
+	window_t* w = (window_t*)win;
+	XFillRectangle(display, w->window, w->gc, x, y, width, height);
+}
+
+void _DeskClear(void* win){
+	window_t* w = (window_t*)win;
+	XClearWindow(display, w->window);
 }

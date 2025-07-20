@@ -29,9 +29,10 @@ void DeskStep(DeskWidget w) {
 	for(i = 0; i < arrlen(w->children); i++) {
 		DeskStep(w->children[i]);
 	}
-	_DeskStep(w->window, &w->render);
+	_DeskStep(w->window, &w->render, &w->held, &w->pressed);
 
 	if(w->render && w->wclass->render != NULL) {
+		_DeskClear(w->window);
 		w->wclass->render(w);
 		w->render = 0;
 	}
@@ -80,6 +81,9 @@ void DeskDestroy(DeskWidget w) {
 	if(w->texts != NULL){
 		arrfree(w->texts);
 	}
+	if(w->integers != NULL){
+		shfree(w->integers);
+	}
 	free(w);
 }
 
@@ -88,6 +92,7 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	va_list va;
 	LOG("Created widget", "");
 	memset(widget, 0, sizeof(*widget));
+	sh_new_strdup(widget->integers);
 	widget->wclass = wclass;
 	widget->render = 1;
 	widget->window = _DeskCreateWindow(parent == DeskWidgetNone ? NULL : parent->window, 50, 50, 200, 200);
@@ -119,7 +124,13 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	return widget;
 }
 
-const char* DeskGetText(DeskWidget w, const char* key){
+int DeskGetInteger(DeskWidget w, const char* key){
+	int idx = shgeti(w->integers, key);
+	if(idx == -1) return 0;
+	return w->integers[idx].value;
+}
+
+const char* DeskGetString(DeskWidget w, const char* key){
 	int i;
 	for(i = 0; i < arrlen(w->texts); i += 2){
 		if(strcmp(w->texts[i], key) == 0){
@@ -142,6 +153,8 @@ void DeskSetInteger(DeskWidget w, const char* key, int value) {
 		DeskSetGeometry(w, 0, 0, value, 0, DeskSetWidth);
 	} else if(strcmp(key, DeskNheight) == 0) {
 		DeskSetGeometry(w, 0, 0, 0, value, DeskSetHeight);
+	}else{
+		shput(w->integers, key, value);
 	}
 }
 
@@ -152,4 +165,14 @@ void DeskSetString(DeskWidget w, const char* key, const char* value) {
 		arrput(w->texts, key);
 		arrput(w->texts, value);
 	}
+}
+
+DeskFont DeskGetFont(DeskWidget w){
+	DeskFont f = w->font;
+	DeskWidget root;
+	if(f == DeskFontNone){
+		root = DeskGetRoot(w);
+		f = root->font;
+	}
+	return f;
 }
