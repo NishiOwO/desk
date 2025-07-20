@@ -87,6 +87,8 @@ DESK_EXPORT void DeskInit(void);
 
 DESK_EXPORT void DeskStep(DeskWidget w);
 
+DESK_EXPORT void DeskSleep(int ms);
+
 DESK_EXPORT DeskBool DeskPending(DeskWidget w);
 
 DESK_EXPORT void DeskMainLoop(DeskWidget w);
