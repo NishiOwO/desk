@@ -13,6 +13,7 @@ typedef struct window {
 	Window window;
 	GC gc;
 	int x, y, w, h;
+	Atom delete_window;
 } window_t;
 
 void _DeskInit(void) {
@@ -39,6 +40,8 @@ void* _DeskCreateWindow(void* parent, int x, int y, int width, int height) {
 	win->y = y;
 	win->w = width;
 	win->h = height;
+	win->delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
+	XSetWMProtocols(display, win->window, &win->delete_window, 1);
 	XSelectInput(display, win->window, mask);
 	XMapWindow(display, win->window);
 
@@ -80,6 +83,7 @@ void _DeskStep(void* win, DeskBool* render, DeskBool* held, DeskBool* pressed) {
 			*held = DeskFalse;
 			*pressed = DeskTrue;
 			*render = 1;
+		}else if(ev.type == ClientMessage && ev.xclient.data.l[0] == w->delete_window){
 		}
 	}
 }
