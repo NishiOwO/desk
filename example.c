@@ -16,7 +16,7 @@ int main(int argc, char** argv){
 		DeskNtitle, "Example window",
 		DeskNwidth, 300,
 		DeskNheight, 300,
-		DeskNfontSize, 30,
+		DeskNfontSize, 16,
 	NULL);
 	w2 = DeskCreateWidget(DeskButtonWidgetClass, w,
 		DeskNtext, "test",
