@@ -3,6 +3,12 @@
 #include <Desk/Button.h>
 #include <Desk/Label.h>
 
+#include <stdio.h>
+
+void pressed(DeskWidget w){
+	printf("pressed %p\n", w);
+}
+
 int main(int argc, char** argv){
 	DeskWidget w, w2, w3;
 	DeskInit();
@@ -10,6 +16,7 @@ int main(int argc, char** argv){
 		DeskNtitle, "Example window",
 		DeskNwidth, 300,
 		DeskNheight, 300,
+		DeskNfontSize, 30,
 	NULL);
 	w2 = DeskCreateWidget(DeskButtonWidgetClass, w,
 		DeskNtext, "test",
@@ -17,6 +24,7 @@ int main(int argc, char** argv){
 		DeskNy, 10,
 		DeskNwidth, 100,
 		DeskNheight, 50,
+		DeskNpressCallback, pressed,
 	NULL);
 	w3 = DeskCreateWidget(DeskLabelWidgetClass, w,
 		DeskNtext, "test",

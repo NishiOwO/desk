@@ -36,6 +36,11 @@ void DeskStep(DeskWidget w) {
 		w->wclass->render(w);
 		w->render = 0;
 	}
+
+	if(w->pressed && (w->wclass->flag & DeskFlagClickable)){
+		DeskCallback cb = DeskGetCallback(w, DeskNpressCallback);
+		if(cb != NULL) cb(w);
+	}
 }
 
 DeskBool DeskPending(DeskWidget w) {
@@ -84,6 +89,9 @@ void DeskDestroy(DeskWidget w) {
 	if(w->integers != NULL){
 		shfree(w->integers);
 	}
+	if(w->callbacks != NULL){
+		shfree(w->callbacks);
+	}
 	free(w);
 }
 
@@ -93,6 +101,7 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	LOG("Created widget", "");
 	memset(widget, 0, sizeof(*widget));
 	sh_new_strdup(widget->integers);
+	sh_new_strdup(widget->callbacks);
 	widget->wclass = wclass;
 	widget->render = 1;
 	widget->window = _DeskCreateWindow(parent == DeskWidgetNone ? NULL : parent->window, 50, 50, 200, 200);
@@ -117,6 +126,9 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 		} else if(k[0] == 'S') {
 			const char* v = va_arg(va, const char*);
 			DeskSetString(widget, k, v);
+		} else if(k[0] == 'C') {
+			DeskCallback v = va_arg(va, DeskCallback);
+			DeskSetCallback(widget, k, v);
 		}
 	}
 	va_end(va);
@@ -124,10 +136,14 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	return widget;
 }
 
-int DeskGetInteger(DeskWidget w, const char* key){
+int DeskGetIntegerEx(DeskWidget w, const char* key, int placeholder){
 	int idx = shgeti(w->integers, key);
-	if(idx == -1) return 0;
+	if(idx == -1) return placeholder;
 	return w->integers[idx].value;
+}
+
+int DeskGetInteger(DeskWidget w, const char* key){
+	return DeskGetIntegerEx(w, key, 0);
 }
 
 const char* DeskGetString(DeskWidget w, const char* key){
@@ -138,6 +154,12 @@ const char* DeskGetString(DeskWidget w, const char* key){
 		}
 	}
 	return NULL;
+}
+
+DeskCallback DeskGetCallback(DeskWidget w, const char* key){
+	int idx = shgeti(w->callbacks, key);
+	if(idx == -1) return NULL;
+	return w->callbacks[idx].value;
 }
 
 void DeskSetGeometry(DeskWidget w, int x, int y, int width, int height, int flag) { _DeskSetGeometry(w->window, x, y, width, height, flag); }
@@ -167,6 +189,10 @@ void DeskSetString(DeskWidget w, const char* key, const char* value) {
 	}
 }
 
+void DeskSetCallback(DeskWidget w, const char* key, DeskCallback value) {
+	shput(w->callbacks, key, value);
+}
+
 DeskFont DeskGetFont(DeskWidget w){
 	DeskFont f = w->font;
 	DeskWidget root;
@@ -175,4 +201,21 @@ DeskFont DeskGetFont(DeskWidget w){
 		f = root->font;
 	}
 	return f;
+}
+
+#define Inherit(type,utype,prop,dval) \
+	DeskWidget widget = w; \
+	type res = dval; \
+	while(1){ \
+		res = DeskGet ## utype ## Ex(widget, prop, dval); \
+		if(res != dval) break; \
+		if(widget->parent == DeskWidgetNone) break; \
+		widget = widget->parent; \
+	}
+
+int DeskGetFontSize(DeskWidget w){
+	Inherit(int, Integer, DeskNfontSize, -1);
+
+	if(res == -1) res = DeskDefaultFontSize;
+	return res;
 }

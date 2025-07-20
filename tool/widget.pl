@@ -37,6 +37,7 @@ foreach my $arg (@ARGV){
 	print(f "}\n");
 	print(f "\n");
 	print(f "DeskWidgetClassRec Desk" . $arg . "WidgetClassRec = {\n");
+	print(f "	0, /* flag */\n");
 	print(f "	widget_init, /* init */\n");
 	print(f "	widget_destroy, /* destroy */\n");
 	print(f "	widget_render /* render */\n");

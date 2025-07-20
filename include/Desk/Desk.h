@@ -19,6 +19,8 @@ extern "C" {
 
 typedef unsigned char DeskBool;
 
+typedef struct _DeskCallbackKeyValue DeskCallbackKeyValue;
+
 typedef struct _DeskIntegerKeyValue DeskIntegerKeyValue;
 
 typedef struct _DeskWidgetClassRec DeskWidgetClassRec;
@@ -27,8 +29,15 @@ typedef DeskWidgetClassRec* DeskWidgetClass;
 typedef struct _DeskWidgetRec DeskWidgetRec;
 typedef DeskWidgetRec* DeskWidget;
 
+typedef void(*DeskCallback)(DeskWidget widget);
+
 #include <Desk/StringDefs.h>
 #include <Desk/Font.h>
+
+struct _DeskCallbackKeyValue {
+	char* key;
+	DeskCallback value;
+};
 
 struct _DeskIntegerKeyValue {
 	char* key;
@@ -36,6 +45,7 @@ struct _DeskIntegerKeyValue {
 };
 
 struct _DeskWidgetClassRec {
+	unsigned int flag;
 	void (*init)(DeskWidget w);
 	void (*destroy)(DeskWidget w);
 	void (*render)(DeskWidget w);
@@ -52,6 +62,7 @@ struct _DeskWidgetRec {
 	DeskBool held;
 	const char** texts;
 	DeskIntegerKeyValue* integers;
+	DeskCallbackKeyValue* callbacks;
 	DeskFont font;
 };
 
@@ -68,6 +79,10 @@ struct _DeskWidgetRec {
 #define DeskSetHeight (1 << 3)
 #define DeskSetSize (DeskSetWidth | DeskSetHeight)
 
+#define DeskFlagClickable (1 << 0)
+
+#define DeskDefaultFontSize 16
+
 DESK_EXPORT void DeskInit(void);
 
 DESK_EXPORT void DeskStep(DeskWidget w);
@@ -80,9 +95,13 @@ DESK_EXPORT DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget paren
 
 DESK_EXPORT DeskWidget DeskGetRoot(DeskWidget w);
 
+DESK_EXPORT int DeskGetIntegerEx(DeskWidget w, const char* key, int placeholder);
+
 DESK_EXPORT int DeskGetInteger(DeskWidget w, const char* key);
 
 DESK_EXPORT const char* DeskGetString(DeskWidget w, const char* key);
+
+DESK_EXPORT DeskCallback DeskGetCallback(DeskWidget w, const char* key);
 
 DESK_EXPORT void DeskSetGeometry(DeskWidget w, int x, int y, int width, int height, int flag);
 
@@ -92,7 +111,11 @@ DESK_EXPORT void DeskSetInteger(DeskWidget w, const char* key, int value);
 
 DESK_EXPORT void DeskSetString(DeskWidget w, const char* key, const char* value);
 
+DESK_EXPORT void DeskSetCallback(DeskWidget w, const char* key, DeskCallback value);
+
 DESK_EXPORT DeskFont DeskGetFont(DeskWidget w);
+
+DESK_EXPORT int DeskGetFontSize(DeskWidget w);
 
 #ifdef __cplusplus
 }

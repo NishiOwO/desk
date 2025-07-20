@@ -23,17 +23,19 @@ static void widget_render(DeskWidget w) {
 		DeskFont font = DeskGetFont(w);
 		DeskWidget root = DeskGetRoot(w);
 		int bw, bh;
-		free(DeskFontRender(font, text, 16, &bw, &bh));
+		int fsz = DeskGetFontSize(w);
+		free(DeskFontRender(font, text, fsz, &bw, &bh));
 		if(w->held){
 			_DeskSetForegroundColor(w->window, 255, 255, 255);
 		}else{
 			_DeskSetForegroundColor(w->window, 0, 0, 0);
 		}
-		DeskFontDraw(w, font, text, width / 2 - bw / 2, height / 2 - bh / 2, 16);
+		DeskFontDraw(w, font, text, width / 2 - bw / 2, height / 2 - bh / 2, fsz);
 	}
 }
 
 DeskWidgetClassRec DeskButtonWidgetClassRec = {
+    DeskFlagClickable, /* flag */
     widget_init,    /* init */
     widget_destroy, /* destroy */
     widget_render   /* render */

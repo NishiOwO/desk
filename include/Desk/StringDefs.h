@@ -16,6 +16,7 @@ extern "C" {
 #define DeskNy "Iy"
 #define DeskNwidth "Iwidth"
 #define DeskNheight "Iheight"
+#define DeskNfontSize "IfontSize"
 
 #ifdef __cplusplus
 }
