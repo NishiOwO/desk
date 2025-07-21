@@ -7,13 +7,13 @@
 #include <X11/Xutil.h>
 
 static Display* display;
-static long mask = ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask;
+static long	mask = ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask;
 
 typedef struct window {
 	Window window;
-	GC gc;
-	int x, y, w, h;
-	Atom delete_window;
+	GC     gc;
+	int    x, y, w, h;
+	Atom   delete_window;
 } window_t;
 
 void _DeskInit(void) {
@@ -26,20 +26,20 @@ void _DeskInit(void) {
 
 void* _DeskCreateWindow(void* parent, int x, int y, int width, int height) {
 	window_t* win = malloc(sizeof(*win));
-	Window pw;
-	XEvent ev;
+	Window	  pw;
+	XEvent	  ev;
 	if(parent == NULL) {
 		pw = RootWindow(display, DefaultScreen(display));
 	} else {
 		pw = ((window_t*)parent)->window;
 	}
 
-	win->window = XCreateSimpleWindow(display, pw, x, y, width, height, 0, BlackPixel(display, 0), WhitePixel(display, 0));
-	win->gc = XCreateGC(display, win->window, 0, 0);
-	win->x = x;
-	win->y = y;
-	win->w = width;
-	win->h = height;
+	win->window	   = XCreateSimpleWindow(display, pw, x, y, width, height, 0, BlackPixel(display, 0), WhitePixel(display, 0));
+	win->gc		   = XCreateGC(display, win->window, 0, 0);
+	win->x		   = x;
+	win->y		   = y;
+	win->w		   = width;
+	win->h		   = height;
 	win->delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(display, win->window, &win->delete_window, 1);
 	XSelectInput(display, win->window, mask);
@@ -65,9 +65,9 @@ DeskBool _DeskPending(void* win) {
 }
 
 void _DeskStep(void* win, DeskBool* render, DeskBool* held, DeskBool* pressed) {
-	XEvent ev;
+	XEvent	  ev;
 	window_t* w = (window_t*)win;
-	*pressed = DeskFalse;
+	*pressed    = DeskFalse;
 	if(XCheckWindowEvent(display, w->window, mask, &ev)) {
 		if(ev.type == Expose) {
 			*render = DeskTrue;
@@ -76,23 +76,23 @@ void _DeskStep(void* win, DeskBool* render, DeskBool* held, DeskBool* pressed) {
 			w->y = ev.xconfigure.y;
 			w->w = ev.xconfigure.width;
 			w->h = ev.xconfigure.height;
-		} else if(ev.type == ButtonPress && ev.xbutton.button == Button1){
-			*held = DeskTrue;
+		} else if(ev.type == ButtonPress && ev.xbutton.button == Button1) {
+			*held	= DeskTrue;
 			*render = 1;
-		}else if(ev.type == ButtonRelease && ev.xbutton.button == Button1 && (*held)){
-			*held = DeskFalse;
+		} else if(ev.type == ButtonRelease && ev.xbutton.button == Button1 && (*held)) {
+			*held	 = DeskFalse;
 			*pressed = DeskTrue;
-			*render = 1;
-		}else if(ev.type == ClientMessage && ev.xclient.data.l[0] == w->delete_window){
+			*render	 = 1;
+		} else if(ev.type == ClientMessage && ev.xclient.data.l[0] == w->delete_window) {
 		}
 	}
 }
 
-void _DeskPutImage(void* win, int x, int y, int width, int height, unsigned char* data){
+void _DeskPutImage(void* win, int x, int y, int width, int height, unsigned char* data) {
 	window_t* w = (window_t*)win;
-	int i, j;
-	for(i = 0; i < height; i++){
-		for(j = 0; j < width; j++){
+	int	  i, j;
+	for(i = 0; i < height; i++) {
+		for(j = 0; j < width; j++) {
 			int idx = (i * width + j) * 4;
 			if(!data[idx + 3]) continue;
 			_DeskFillRectangle(win, x + j, y + i, 1, 1);
@@ -120,16 +120,16 @@ void _DeskSetGeometry(void* win, int x, int y, int width, int height, int flag) 
 
 void _DeskGetGeometry(void* win, int* x, int* y, int* width, int* height) {
 	window_t* w = (window_t*)win;
-	*x = w->x;
-	*y = w->y;
-	*width = w->w;
-	*height = w->h;
+	*x	    = w->x;
+	*y	    = w->y;
+	*width	    = w->w;
+	*height	    = w->h;
 }
 
 void _DeskSetTitle(void* win, const char* title) { XSetStandardProperties(display, ((window_t*)win)->window, title, "Desk GUI", None, (char**)NULL, 0, NULL); }
 
 void _DeskSetForegroundColor(void* win, int r, int g, int b) {
-	window_t* w = (window_t*)win;
+	window_t*     w = (window_t*)win;
 	unsigned long c = 0;
 
 	c = c << 8;
@@ -151,24 +151,24 @@ int _DeskGetBorderWidth(void* win) {
 
 void _DeskSetBorderWidth(void* win, int bw) {
 	XGCValues gv;
-	window_t* w = (window_t*)win;
+	window_t* w   = (window_t*)win;
 	gv.line_width = bw;
 	XChangeGC(display, w->gc, GCLineWidth, &gv);
 }
 
 void _DeskDrawRectangle(void* win, int x, int y, int width, int height) {
-	window_t* w = (window_t*)win;
-	double sb = (double)_DeskGetBorderWidth(win) / 2;
+	window_t* w  = (window_t*)win;
+	double	  sb = (double)_DeskGetBorderWidth(win) / 2;
 	if((sb - (int)sb) > 0.5) sb = 1 + (int)sb;
 	XDrawRectangle(display, w->window, w->gc, x + sb, y + sb, width - sb * 2, height - sb * 2);
 }
 
-void _DeskFillRectangle(void* win, int x, int y, int width, int height){
+void _DeskFillRectangle(void* win, int x, int y, int width, int height) {
 	window_t* w = (window_t*)win;
 	XFillRectangle(display, w->window, w->gc, x, y, width, height);
 }
 
-void _DeskClear(void* win){
+void _DeskClear(void* win) {
 	window_t* w = (window_t*)win;
 	XClearWindow(display, w->window);
 }

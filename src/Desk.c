@@ -20,9 +20,7 @@ void DeskSleep(int ms) {
 #endif
 }
 
-void DeskInit(void) {
-	_DeskInit();
-}
+void DeskInit(void) { _DeskInit(); }
 
 void DeskStep(DeskWidget w) {
 	int i;
@@ -37,7 +35,7 @@ void DeskStep(DeskWidget w) {
 		w->render = 0;
 	}
 
-	if(w->pressed && (w->wclass->flag & DeskFlagClickable)){
+	if(w->pressed && (w->wclass->flag & DeskFlagClickable)) {
 		DeskCallback cb = DeskGetCallback(w, DeskNpressCallback);
 		if(cb != NULL) cb(w);
 	}
@@ -83,13 +81,13 @@ void DeskDestroy(DeskWidget w) {
 		}
 	}
 	if(w->wclass->destroy != NULL) w->wclass->destroy(w);
-	if(w->texts != NULL){
+	if(w->texts != NULL) {
 		arrfree(w->texts);
 	}
-	if(w->integers != NULL){
+	if(w->integers != NULL) {
 		shfree(w->integers);
 	}
-	if(w->callbacks != NULL){
+	if(w->callbacks != NULL) {
 		shfree(w->callbacks);
 	}
 	free(w);
@@ -97,9 +95,9 @@ void DeskDestroy(DeskWidget w) {
 
 DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	DeskWidget widget;
-	va_list va;
+	va_list	   va;
 
-	if(parent == DeskWidgetNone && !(wclass->flag & DeskFlagCanBeRoot)){
+	if(parent == DeskWidgetNone && !(wclass->flag & DeskFlagCanBeRoot)) {
 		LOG("Cannot be root widget", "");
 		return DeskWidgetNone;
 	}
@@ -115,9 +113,9 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	widget->parent = parent;
 	if(parent != DeskWidgetNone) {
 		arrput(parent->children, widget);
-	}else{
+	} else {
 		widget->font = DeskFontOpen(NULL);
-		if(widget->font != DeskFontNone){
+		if(widget->font != DeskFontNone) {
 			LOG("Loaded default font", "");
 		}
 	}
@@ -143,27 +141,25 @@ DeskWidget DeskCreateWidget(DeskWidgetClass wclass, DeskWidget parent, ...) {
 	return widget;
 }
 
-int DeskGetIntegerEx(DeskWidget w, const char* key, int placeholder){
+int DeskGetIntegerEx(DeskWidget w, const char* key, int placeholder) {
 	int idx = shgeti(w->integers, key);
 	if(idx == -1) return placeholder;
 	return w->integers[idx].value;
 }
 
-int DeskGetInteger(DeskWidget w, const char* key){
-	return DeskGetIntegerEx(w, key, 0);
-}
+int DeskGetInteger(DeskWidget w, const char* key) { return DeskGetIntegerEx(w, key, 0); }
 
-const char* DeskGetString(DeskWidget w, const char* key){
+const char* DeskGetString(DeskWidget w, const char* key) {
 	int i;
-	for(i = 0; i < arrlen(w->texts); i += 2){
-		if(strcmp(w->texts[i], key) == 0){
+	for(i = 0; i < arrlen(w->texts); i += 2) {
+		if(strcmp(w->texts[i], key) == 0) {
 			return w->texts[i + 1];
 		}
 	}
 	return NULL;
 }
 
-DeskCallback DeskGetCallback(DeskWidget w, const char* key){
+DeskCallback DeskGetCallback(DeskWidget w, const char* key) {
 	int idx = shgeti(w->callbacks, key);
 	if(idx == -1) return NULL;
 	return w->callbacks[idx].value;
@@ -182,7 +178,7 @@ void DeskSetInteger(DeskWidget w, const char* key, int value) {
 		DeskSetGeometry(w, 0, 0, value, 0, DeskSetWidth);
 	} else if(strcmp(key, DeskNheight) == 0) {
 		DeskSetGeometry(w, 0, 0, 0, value, DeskSetHeight);
-	}else{
+	} else {
 		shput(w->integers, key, value);
 	}
 }
@@ -190,37 +186,35 @@ void DeskSetInteger(DeskWidget w, const char* key, int value) {
 void DeskSetString(DeskWidget w, const char* key, const char* value) {
 	if(strcmp(key, DeskNtitle) == 0) {
 		_DeskSetTitle(w->window, value);
-	}else{
+	} else {
 		arrput(w->texts, key);
 		arrput(w->texts, value);
 	}
 }
 
-void DeskSetCallback(DeskWidget w, const char* key, DeskCallback value) {
-	shput(w->callbacks, key, value);
-}
+void DeskSetCallback(DeskWidget w, const char* key, DeskCallback value) { shput(w->callbacks, key, value); }
 
-DeskFont DeskGetFont(DeskWidget w){
-	DeskFont f = w->font;
+DeskFont DeskGetFont(DeskWidget w) {
+	DeskFont   f = w->font;
 	DeskWidget root;
-	if(f == DeskFontNone){
+	if(f == DeskFontNone) {
 		root = DeskGetRoot(w);
-		f = root->font;
+		f    = root->font;
 	}
 	return f;
 }
 
-#define Inherit(type,utype,prop,dval) \
+#define Inherit(type, utype, prop, dval) \
 	DeskWidget widget = w; \
-	type res = dval; \
-	while(1){ \
-		res = DeskGet ## utype ## Ex(widget, prop, dval); \
+	type	   res	  = dval; \
+	while(1) { \
+		res = DeskGet##utype##Ex(widget, prop, dval); \
 		if(res != dval) break; \
 		if(widget->parent == DeskWidgetNone) break; \
 		widget = widget->parent; \
 	}
 
-int DeskGetFontSize(DeskWidget w){
+int DeskGetFontSize(DeskWidget w) {
 	Inherit(int, Integer, DeskNfontSize, -1);
 
 	if(res == -1) res = DeskDefaultFontSize;

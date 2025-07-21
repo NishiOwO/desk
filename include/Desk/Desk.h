@@ -24,24 +24,24 @@ typedef struct _DeskCallbackKeyValue DeskCallbackKeyValue;
 typedef struct _DeskIntegerKeyValue DeskIntegerKeyValue;
 
 typedef struct _DeskWidgetClassRec DeskWidgetClassRec;
-typedef DeskWidgetClassRec* DeskWidgetClass;
+typedef DeskWidgetClassRec*	   DeskWidgetClass;
 
 typedef struct _DeskWidgetRec DeskWidgetRec;
-typedef DeskWidgetRec* DeskWidget;
+typedef DeskWidgetRec*	      DeskWidget;
 
-typedef void(*DeskCallback)(DeskWidget widget);
+typedef void (*DeskCallback)(DeskWidget widget);
 
 #include <Desk/StringDefs.h>
 #include <Desk/Font.h>
 
 struct _DeskCallbackKeyValue {
-	char* key;
+	char*	     key;
 	DeskCallback value;
 };
 
 struct _DeskIntegerKeyValue {
 	char* key;
-	int value;
+	int   value;
 };
 
 struct _DeskWidgetClassRec {
@@ -52,18 +52,18 @@ struct _DeskWidgetClassRec {
 };
 
 struct _DeskWidgetRec {
-	DeskWidgetClass wclass;
-	DeskWidget parent;
-	DeskWidget* children;
-	void* opaque;
-	void* window;
-	DeskBool render;
-	DeskBool pressed;
-	DeskBool held;
-	const char** texts;
-	DeskIntegerKeyValue* integers;
+	DeskWidgetClass	      wclass;
+	DeskWidget	      parent;
+	DeskWidget*	      children;
+	void*		      opaque;
+	void*		      window;
+	DeskBool	      render;
+	DeskBool	      pressed;
+	DeskBool	      held;
+	const char**	      texts;
+	DeskIntegerKeyValue*  integers;
 	DeskCallbackKeyValue* callbacks;
-	DeskFont font;
+	DeskFont	      font;
 };
 
 #define DeskTrue ((DeskBool)1)

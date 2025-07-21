@@ -8,7 +8,7 @@ extern "C" {
 #endif
 
 typedef struct _DeskFontRec DeskFontRec;
-typedef DeskFontRec* DeskFont;
+typedef DeskFontRec*	    DeskFont;
 
 #include <Desk/Desk.h>
 
@@ -20,7 +20,7 @@ typedef void* DeskFontTTF;
 #endif
 
 struct _DeskFontRec {
-	DeskFontTTF ttf;
+	DeskFontTTF    ttf;
 	unsigned char* buffer;
 };
 

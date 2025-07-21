@@ -1,7 +1,6 @@
 #include <Desk/Unicode.h>
 
 #define CAST_I32(x) ((long)(x))
-/* maybe should use gf_uint8_t but no one uses a computer where sizeof(unsigned char) is not 8... */
 static int DeskUTF8Count(unsigned char c) {
 	if(0 <= c && c < 0x80) {
 		return 1;
@@ -53,4 +52,3 @@ int DeskUnicode8To32(const char* input, long* output) {
 
 	return b;
 }
-

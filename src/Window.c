@@ -9,9 +9,9 @@ static void widget_render(DeskWidget w) {}
 
 DeskWidgetClassRec DeskWindowWidgetClassRec = {
     DeskFlagCanBeRoot, /* flag */
-    widget_init,    /* init */
-    widget_destroy, /* destroy */
-    widget_render   /* render */
+    widget_init,       /* init */
+    widget_destroy,    /* destroy */
+    widget_render      /* render */
 };
 
 DeskWidgetClass DeskWindowWidgetClass = (DeskWidgetClass)&DeskWindowWidgetClassRec;

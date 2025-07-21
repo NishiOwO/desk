@@ -43,11 +43,11 @@ int main(int argc, char** argv){
 		DeskNpressCallback, pressed,
 	NULL);
 	w5 = DeskCreateWidget(DeskLabelWidgetClass, w,
-		DeskNtext, "test",
+		DeskNtext, "あのイーハトーヴォのすきとほった風、\n夏でも底に冷たさをもつ青いそら、\nうつくしい森で飾られたモーリオ市、\n郊外のぎらぎらひかる草の波",
 		DeskNx, 10,
 		DeskNy, 60,
-		DeskNwidth, 100,
-		DeskNheight, 50,
+		DeskNwidth, 350,
+		DeskNheight, 250,
 	NULL);
 	DeskMainLoop(w);
 }

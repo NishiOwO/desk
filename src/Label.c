@@ -4,18 +4,16 @@
 
 #include <stdlib.h>
 
-static void widget_init(DeskWidget w){
-}
+static void widget_init(DeskWidget w) {}
 
-static void widget_destroy(DeskWidget w){
-}
+static void widget_destroy(DeskWidget w) {}
 
-static void widget_render(DeskWidget w){
+static void widget_render(DeskWidget w) {
 	const char* text = DeskGetString(w, DeskNtext);
-	if(text != NULL){
-		int x, y, width, height, bw, bh;
+	if(text != NULL) {
+		int	 x, y, width, height, bw, bh;
 		DeskFont font = DeskGetFont(w);
-		int fsz = DeskGetFontSize(w);
+		int	 fsz  = DeskGetFontSize(w);
 		DeskGetGeometry(w, &x, &y, &width, &height);
 		_DeskSetForegroundColor(w->window, 0, 0, 0);
 		free(DeskFontRender(font, text, fsz, &bw, &bh));
@@ -24,10 +22,10 @@ static void widget_render(DeskWidget w){
 }
 
 DeskWidgetClassRec DeskLabelWidgetClassRec = {
-	0, /* flag */
-	widget_init, /* init */
-	widget_destroy, /* destroy */
-	widget_render /* render */
+    0,		    /* flag */
+    widget_init,    /* init */
+    widget_destroy, /* destroy */
+    widget_render   /* render */
 };
 
 DeskWidgetClass DeskLabelWidgetClass = (DeskWidgetClass)&DeskLabelWidgetClassRec;
